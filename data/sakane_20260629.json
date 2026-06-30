@@ -1,14 +1,153 @@
 {
   "date": "2026-06-29",
   "breadth": {
-    "s_high_close": 0,
-    "s_high_touch_total": 0,
-    "s_low_close": 0,
-    "s_low_touch_total": 0
+    "s_high_close": 10,
+    "s_high_touch_total": 14,
+    "s_low_close": 3,
+    "s_low_touch_total": 3
   },
-  "ryu_r_candidates": [],
-  "s_high_close": [],
-  "s_high_touch_only": [],
-  "s_low_close": [],
+  "ryu_r_candidates": [
+    {
+      "code": "3512",
+      "close": 940.0,
+      "market": ""
+    },
+    {
+      "code": "3989",
+      "close": 1145.0,
+      "market": ""
+    },
+    {
+      "code": "4265",
+      "close": 430.0,
+      "market": ""
+    },
+    {
+      "code": "4395",
+      "close": 932.0,
+      "market": ""
+    },
+    {
+      "code": "4446",
+      "close": 764.0,
+      "market": ""
+    },
+    {
+      "code": "584A",
+      "close": 3075.0,
+      "market": ""
+    },
+    {
+      "code": "6166",
+      "close": 666.0,
+      "market": ""
+    },
+    {
+      "code": "6620",
+      "close": 1010.0,
+      "market": ""
+    },
+    {
+      "code": "6696",
+      "close": 322.0,
+      "market": ""
+    },
+    {
+      "code": "7815",
+      "close": 306.0,
+      "market": ""
+    }
+  ],
+  "s_high_close": [
+    {
+      "code": "3512",
+      "close": 940.0,
+      "market": ""
+    },
+    {
+      "code": "3989",
+      "close": 1145.0,
+      "market": ""
+    },
+    {
+      "code": "4265",
+      "close": 430.0,
+      "market": ""
+    },
+    {
+      "code": "4395",
+      "close": 932.0,
+      "market": ""
+    },
+    {
+      "code": "4446",
+      "close": 764.0,
+      "market": ""
+    },
+    {
+      "code": "584A",
+      "close": 3075.0,
+      "market": ""
+    },
+    {
+      "code": "6166",
+      "close": 666.0,
+      "market": ""
+    },
+    {
+      "code": "6620",
+      "close": 1010.0,
+      "market": ""
+    },
+    {
+      "code": "6696",
+      "close": 322.0,
+      "market": ""
+    },
+    {
+      "code": "7815",
+      "close": 306.0,
+      "market": ""
+    }
+  ],
+  "s_high_touch_only": [
+    {
+      "code": "7069",
+      "close": 699.0,
+      "market": ""
+    },
+    {
+      "code": "7352",
+      "close": 490.0,
+      "market": ""
+    },
+    {
+      "code": "9229",
+      "close": 142.0,
+      "market": ""
+    },
+    {
+      "code": "9941",
+      "close": 1520.0,
+      "market": ""
+    }
+  ],
+  "s_low_close": [
+    {
+      "code": "3135",
+      "close": 1085.0,
+      "market": ""
+    },
+    {
+      "code": "7044",
+      "close": 473.0,
+      "market": ""
+    },
+    {
+      "code": "9256",
+      "close": 4410.0,
+      "market": ""
+    }
+  ],
   "s_low_touch_only": []
 }
