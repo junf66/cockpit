@@ -1,0 +1,132 @@
+{
+  "date": "2026-06-30",
+  "breadth": {
+    "s_high_close": 11,
+    "s_high_touch_total": 13,
+    "s_low_close": 0,
+    "s_low_touch_total": 0
+  },
+  "ryu_r_candidates": [
+    {
+      "code": "265A",
+      "close": 696.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4179",
+      "close": 600.0,
+      "market": "グロース"
+    },
+    {
+      "code": "584A",
+      "close": 3775.0,
+      "market": "グロース"
+    },
+    {
+      "code": "589A",
+      "close": 1776.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6166",
+      "close": 766.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6327",
+      "close": 7900.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "6522",
+      "close": 1330.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6977",
+      "close": 1938.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7140",
+      "close": 974.0,
+      "market": "グロース"
+    },
+    {
+      "code": "7815",
+      "close": 386.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_close": [
+    {
+      "code": "265A",
+      "close": 696.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4179",
+      "close": 600.0,
+      "market": "グロース"
+    },
+    {
+      "code": "546A",
+      "close": 2242.0,
+      "market": "プライム"
+    },
+    {
+      "code": "584A",
+      "close": 3775.0,
+      "market": "グロース"
+    },
+    {
+      "code": "589A",
+      "close": 1776.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6166",
+      "close": 766.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6327",
+      "close": 7900.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "6522",
+      "close": 1330.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6977",
+      "close": 1938.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7140",
+      "close": 974.0,
+      "market": "グロース"
+    },
+    {
+      "code": "7815",
+      "close": 386.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_touch_only": [
+    {
+      "code": "4446",
+      "close": 860.0,
+      "market": "プライム"
+    },
+    {
+      "code": "9235",
+      "close": 536.0,
+      "market": "グロース"
+    }
+  ],
+  "s_low_close": [],
+  "s_low_touch_only": []
+}
