@@ -232,17 +232,27 @@ def fetch_master(session, date_yyyymmdd):
     """銘柄一覧を取得し、コード → {code, market_code, market_name} の索引を返す。"""
     records = get_paged(session, "/equities/master", {"date": date_yyyymmdd})
     index = {}
+    resolved = 0
     for rec in records:
         code = _get(rec, "Code", "code", "LocalCode")
         if code is None:
             continue
-        mcode = _get(rec, "MarketCode", "market_code", "marketcode", "MarketCodeName")
-        mname = _get(rec, "MarketCodeName", "MarketName", "market_name", "market")
+        mcode = _get(rec, "MarketCode", "market_code", "marketcode", "MC")
+        mname = _get(rec, "MarketCodeName", "MarketName", "market_name", "market", "MCN")
         mcode_s = str(mcode).strip() if mcode is not None else None
         if not mname:
             mname = MARKET_NAMES.get(mcode_s, mcode_s or "")
+        if mcode_s or mname:
+            resolved += 1
         info = {"market_code": mcode_s, "market_name": mname}
         _index_code(index, str(code).strip(), info)
+    if records and resolved == 0:
+        print("[WARN] /equities/master の市場区分フィールドが解決できませんでした。"
+              "⑩Rのプライム/PRO除外が効きません。", file=sys.stderr)
+        print("[WARN] master 実際のキー一覧: " + ", ".join(sorted(records[0].keys())),
+              file=sys.stderr)
+        print("[WARN] fetch_master() の市場フィールド別名(_get 引数)に追記してください。",
+              file=sys.stderr)
     return index
 
 
@@ -272,14 +282,15 @@ def classify(daily_records, market_index):
     s_low_close, s_low_touch_only = [], []
 
     for rec in daily_records:
-        close = _num(_get(rec, "Close", "close"))
+        # V2 フィールド名は短縮形（C/H/L/O, UL/LL）。V1 longhand も保険で許容。
+        close = _num(_get(rec, "C", "Close", "close"))
         if close is None:
             continue  # 売買不成立・終日停止 → 除外
 
-        high = _num(_get(rec, "High", "high"))
-        low = _num(_get(rec, "Low", "low"))
-        upper = _is_hit(_get(rec, "UpperLimit", "upper_limit", "upperlimit", "Upper"))
-        lower = _is_hit(_get(rec, "LowerLimit", "lower_limit", "lowerlimit", "Lower"))
+        high = _num(_get(rec, "H", "High", "high"))
+        low = _num(_get(rec, "L", "Low", "low"))
+        upper = _is_hit(_get(rec, "UL", "UpperLimit", "upper_limit", "upperlimit"))
+        lower = _is_hit(_get(rec, "LL", "LowerLimit", "lower_limit", "lowerlimit"))
 
         code = _get(rec, "Code", "code", "LocalCode")
         mkt = lookup_market(market_index, code)
@@ -435,19 +446,26 @@ def warn_if_fields_missing(daily_records):
     if not daily_records:
         return
     rec = daily_records[0]
-    upper = _get(rec, "UpperLimit", "upper_limit", "upperlimit", "Upper")
-    close = _get(rec, "Close", "close")
+    upper = _get(rec, "UL", "UpperLimit", "upper_limit", "upperlimit")
+    lower = _get(rec, "LL", "LowerLimit", "lower_limit", "lowerlimit")
+    close = _get(rec, "C", "Close", "close")
     missing = []
     if upper is None:
-        missing.append("UpperLimit/LowerLimit 相当")
+        missing.append("UL/LL(上限・下限フラグ) 相当")
     if close is None:
-        missing.append("Close 相当")
+        missing.append("C(Close) 相当")
     if missing:
         print("[WARN] 想定フィールドが見つかりません: " + ", ".join(missing),
               file=sys.stderr)
         print("[WARN] 実際のキー一覧: " + ", ".join(sorted(rec.keys())), file=sys.stderr)
         print("[WARN] capture/capture_sakane.py の別名候補(_get 引数)を実フィールド名に"
               "合わせて修正してください。", file=sys.stderr)
+        return
+    # フィールドは解決済み。UL/LL が 0/1 フラグか制限値の価格かを確認できるよう
+    # 先頭レコードの実値をサンプル出力する（検証フェーズ用の INFO）。
+    print(f"[INFO] サンプル(先頭 Code={_get(rec, 'Code', 'code')}): "
+          f"O={_get(rec, 'O', 'Open', 'open')} H={_get(rec, 'H', 'High', 'high')} "
+          f"L={_get(rec, 'L', 'Low', 'low')} C={close} UL={upper} LL={lower}")
 
 
 # ---------------------------------------------------------------------------
