@@ -237,8 +237,9 @@ def fetch_master(session, date_yyyymmdd):
         code = _get(rec, "Code", "code", "LocalCode")
         if code is None:
             continue
-        mcode = _get(rec, "MarketCode", "market_code", "marketcode", "MC")
-        mname = _get(rec, "MarketCodeName", "MarketName", "market_name", "market", "MCN")
+        # V2 master は短縮名: Mkt=市場区分コード, MktNm=市場区分名。V1 longhand も保険で許容。
+        mcode = _get(rec, "Mkt", "MarketCode", "market_code", "marketcode")
+        mname = _get(rec, "MktNm", "MarketCodeName", "MarketName", "market_name", "market")
         mcode_s = str(mcode).strip() if mcode is not None else None
         if not mname:
             mname = MARKET_NAMES.get(mcode_s, mcode_s or "")
