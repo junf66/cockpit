@@ -1,0 +1,81 @@
+name: capture-sakane
+
+# S高/S安キャプチャ。引け後に全銘柄を取得して data/sakane_YYYYMMDD.json を生成・コミット。
+# cron は UTC 表記（JST = UTC + 9h）。
+on:
+  schedule:
+    # 夕方便: 平日 18:00 JST (= 09:00 UTC) 当日分を取得
+    - cron: "0 9 * * 1-5"
+    # 翌朝便: 翌営業日 08:30 JST (= 前日 23:30 UTC) 直近営業日分を再取得して上書き確定
+    #   JST Tue-Sat 08:30 = UTC Mon-Fri 23:30
+    - cron: "30 23 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "evening (当日) / morning (直近営業日を遡って再取得)"
+        type: choice
+        options: [evening, morning]
+        default: evening
+      date:
+        description: "取得日 YYYYMMDD（任意・指定すると mode を無視）"
+        required: false
+        default: ""
+
+concurrency:
+  group: capture-sakane
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r capture/requirements.txt
+
+      - name: Determine mode
+        id: mode
+        run: |
+          # 23:30 UTC 起動 = 翌朝便(morning)、それ以外(09:00 UTC / 手動)は evening 既定
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event.schedule }}" = "30 23 * * 1-5" ]; then
+              echo "mode=morning" >> "$GITHUB_OUTPUT"
+            else
+              echo "mode=evening" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "mode=${{ github.event.inputs.mode || 'evening' }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run capture
+        env:
+          JQUANTS_API_KEY: ${{ secrets.JQUANTS_API_KEY }}
+        run: |
+          DATE_ARG=""
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            DATE_ARG="--date ${{ github.event.inputs.date }}"
+          fi
+          python capture/capture_sakane.py --mode "${{ steps.mode.outputs.mode }}" $DATE_ARG
+
+      - name: Commit data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain data/)" ]; then
+            git add data/
+            git commit -m "data: capture sakane (${{ steps.mode.outputs.mode }}) [skip ci]"
+            for i in 1 2 3 4; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" || true
+              git push && break
+              echo "push failed, retry $i"; sleep $((2 ** i))
+            done
+          else
+            echo "変更なし（非営業日 or 同内容）。コミットしません。"
+          fi
