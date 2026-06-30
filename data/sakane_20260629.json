@@ -1,0 +1,14 @@
+{
+  "date": "2026-06-29",
+  "breadth": {
+    "s_high_close": 0,
+    "s_high_touch_total": 0,
+    "s_low_close": 0,
+    "s_low_touch_total": 0
+  },
+  "ryu_r_candidates": [],
+  "s_high_close": [],
+  "s_high_touch_only": [],
+  "s_low_close": [],
+  "s_low_touch_only": []
+}
