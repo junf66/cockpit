@@ -1,0 +1,129 @@
+{
+  "date": "2026-07-01",
+  "breadth": {
+    "s_high_close": 9,
+    "s_high_touch_total": 12,
+    "s_low_close": 2,
+    "s_low_touch_total": 3
+  },
+  "ryu_r_candidates": [
+    {
+      "code": "265A",
+      "close": 796.0,
+      "market": "グロース"
+    },
+    {
+      "code": "589A",
+      "close": 2176.0,
+      "market": "グロース"
+    },
+    {
+      "code": "5942",
+      "close": 715.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "5967",
+      "close": 496.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7041",
+      "close": 347.0,
+      "market": "グロース"
+    },
+    {
+      "code": "9256",
+      "close": 5340.0,
+      "market": "グロース"
+    },
+    {
+      "code": "9425",
+      "close": 215.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_close": [
+    {
+      "code": "265A",
+      "close": 796.0,
+      "market": "グロース"
+    },
+    {
+      "code": "3436",
+      "close": 4729.0,
+      "market": "プライム"
+    },
+    {
+      "code": "589A",
+      "close": 2176.0,
+      "market": "グロース"
+    },
+    {
+      "code": "5942",
+      "close": 715.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "5967",
+      "close": 496.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "6590",
+      "close": 5320.0,
+      "market": "プライム"
+    },
+    {
+      "code": "7041",
+      "close": 347.0,
+      "market": "グロース"
+    },
+    {
+      "code": "9256",
+      "close": 5340.0,
+      "market": "グロース"
+    },
+    {
+      "code": "9425",
+      "close": 215.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_touch_only": [
+    {
+      "code": "330A",
+      "close": 473.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4424",
+      "close": 235.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6522",
+      "close": 1560.0,
+      "market": "グロース"
+    }
+  ],
+  "s_low_close": [
+    {
+      "code": "6620",
+      "close": 799.0,
+      "market": "プライム"
+    },
+    {
+      "code": "7140",
+      "close": 824.0,
+      "market": "グロース"
+    }
+  ],
+  "s_low_touch_only": [
+    {
+      "code": "7352",
+      "close": 371.0,
+      "market": "グロース"
+    }
+  ]
+}
