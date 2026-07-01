@@ -383,6 +383,33 @@ def write_output(out, out_dir, date_yyyymmdd):
     return path
 
 
+def update_history(out, out_dir):
+    """日次 breadth を data/history.json に upsert（同日は上書き）。サイトのトレンド用。"""
+    path = os.path.join(out_dir, "history.json")
+    hist = []
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                hist = json.load(f)
+        except (ValueError, OSError):
+            hist = []
+    row = {
+        "date": out["date"],
+        "s_high_close": out["breadth"]["s_high_close"],
+        "s_high_touch_total": out["breadth"]["s_high_touch_total"],
+        "s_low_close": out["breadth"]["s_low_close"],
+        "s_low_touch_total": out["breadth"]["s_low_touch_total"],
+        "ryu_r": len(out["ryu_r_candidates"]),
+    }
+    hist = [r for r in hist if r.get("date") != out["date"]]
+    hist.append(row)
+    hist.sort(key=lambda r: r.get("date", ""))
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(hist, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    return path
+
+
 def print_summary(out, date_yyyymmdd):
     b = out["breadth"]
     gate = gate_label(b["s_high_close"])
@@ -548,6 +575,8 @@ def main(argv=None):
     out = build_output(to_iso(date_obj), classified)
     path = write_output(out, out_dir, ymd)
     print(f"[write] {path}")
+    hpath = update_history(out, out_dir)
+    print(f"[write] {hpath}")
     print_summary(out, ymd)
     return 0
 

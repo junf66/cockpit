@@ -1,0 +1,18 @@
+[
+  {
+    "date": "2026-06-29",
+    "s_high_close": 10,
+    "s_high_touch_total": 14,
+    "s_low_close": 3,
+    "s_low_touch_total": 3,
+    "ryu_r": 8
+  },
+  {
+    "date": "2026-06-30",
+    "s_high_close": 11,
+    "s_high_touch_total": 13,
+    "s_low_close": 0,
+    "s_low_touch_total": 0,
+    "ryu_r": 10
+  }
+]

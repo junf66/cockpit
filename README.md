@@ -13,6 +13,20 @@
 > エントリー直前のライブ gate は従来どおり証券会社側で目視する。ここで生成するのは
 > (a) 閾値較正用の日次履歴、(b) 前日S高引け数（翌日のレジーム入力）。
 
+## ダッシュボード（サイト）
+
+リポジトリ直下の `index.html` が静的ダッシュボード。`data/*.json` を読み込み、
+S高/S安の引け・タッチ、gate 判定、⑩R候補、breadth 履歴トレンドを表示する。
+
+**GitHub Pages で公開する手順:**
+1. **Settings → Pages** を開く
+2. **Source** を「Deploy from a branch」、**Branch** を `main` / `/(root)` にして Save
+3. 数十秒後 `https://junf66.github.io/cockpit/` で閲覧可能
+
+キャプチャのたびに `data/history.json`（日次 breadth のトレンド用）が自動更新され、
+サイトの日付セレクタとトレンドに反映される。※ローカルで開く場合は `file://` では
+fetch できないため、`python -m http.server` 等で配信して開くこと。
+
 ## セットアップ
 
 1. J-Quants の API キーを取得（V2 はダッシュボードで発行、トークン交換なし・無期限）。

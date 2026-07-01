@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>需給コックピット — S高/S安</title>
+<style>
+  :root{
+    --bg:#0e1116; --panel:#171c24; --panel2:#1e242e; --line:#2a313c;
+    --fg:#e6edf3; --muted:#8b98a8; --hi:#ff5c5c; --lo:#4aa3ff; --ok:#3fb950;
+    --warn:#e3b341; --stop:#f85149;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+    font-size:15px;line-height:1.5}
+  header{padding:18px 20px;border-bottom:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  h1{font-size:19px;margin:0;font-weight:700}
+  h1 small{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px}
+  .controls{display:flex;gap:10px;align-items:center}
+  select{background:var(--panel2);color:var(--fg);border:1px solid var(--line);
+    border-radius:8px;padding:7px 10px;font-size:14px}
+  main{max-width:1100px;margin:0 auto;padding:20px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card .label{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .card .value{font-size:30px;font-weight:700;line-height:1}
+  .card .sub{color:var(--muted);font-size:12px;margin-top:6px}
+  .card.hi .value{color:var(--hi)} .card.lo .value{color:var(--lo)}
+  .gate{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:700;margin-top:8px}
+  .gate.thin{background:rgba(63,185,80,.15);color:var(--ok);border:1px solid var(--ok)}
+  .gate.normal{background:rgba(227,179,65,.15);color:var(--warn);border:1px solid var(--warn)}
+  .gate.skip{background:rgba(248,81,73,.15);color:var(--stop);border:1px solid var(--stop)}
+  section{margin-bottom:26px}
+  h2{font-size:15px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:8px}
+  h2 .count{color:var(--muted);font-weight:400;font-size:13px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13px}
+  .chip b{font-size:15px} .chip .mk{color:var(--muted);margin-left:6px;font-size:12px}
+  .chip .px{color:var(--muted);margin-left:6px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600} td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .empty{color:var(--muted);font-size:13px;padding:6px 2px}
+  .trend{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .muted{color:var(--muted);font-size:12px}
+  .err{color:var(--stop);padding:14px;background:rgba(248,81,73,.08);border:1px solid var(--stop);border-radius:10px}
+  a{color:var(--lo)}
+</style>
+</head>
+<body>
+<header>
+  <h1>需給コックピット <small>本日S高/S安・⑩R候補（J-Quants V2 EOD）</small></h1>
+  <div class="controls">
+    <label class="muted" for="dateSel">日付</label>
+    <select id="dateSel"></select>
+  </div>
+</header>
+<main id="app">
+  <p class="muted">読み込み中…</p>
+</main>
+
+<script>
+const GATE = {thin:9, normal:15};
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function gateInfo(n){
+  if(n<=GATE.thin)   return {cls:'thin',   txt:'厚く張れる'};
+  if(n<=GATE.normal) return {cls:'normal', txt:'通常'};
+  return {cls:'skip', txt:'見送り'};
+}
+
+async function fetchJSON(url){
+  const r = await fetch(url, {cache:'no-store'});
+  if(!r.ok) throw new Error(url+' → HTTP '+r.status);
+  return r.json();
+}
+
+function chips(list){
+  if(!list.length) return '<div class="empty">該当なし</div>';
+  return '<div class="chips">'+list.map(x=>
+    `<span class="chip"><b>${esc(x.code)}</b><span class="mk">${esc(x.market||'—')}</span>`+
+    `<span class="px">${Number(x.close).toLocaleString()}</span></span>`).join('')+'</div>';
+}
+function tableRows(list){
+  if(!list.length) return '<div class="empty">該当なし</div>';
+  return '<table><thead><tr><th>コード</th><th>市場</th><th class="num">終値</th></tr></thead><tbody>'+
+    list.map(x=>`<tr><td>${esc(x.code)}</td><td>${esc(x.market||'—')}</td>`+
+    `<td class="num">${Number(x.close).toLocaleString()}</td></tr>`).join('')+'</tbody></table>';
+}
+
+function trendSVG(hist){
+  if(hist.length<2) return '<div class="muted">履歴が2日以上たまるとトレンドを表示します。</div>';
+  const data = hist.slice(-40);
+  const W=Math.max(320, data.length*26), H=170, P=26;
+  const maxV = Math.max(GATE.normal+3, ...data.map(d=>d.s_high_close), ...data.map(d=>d.s_low_close));
+  const x = i => P + i*((W-2*P)/(data.length-1||1));
+  const y = v => H-P - v*((H-2*P)/maxV);
+  const line = arr => arr.map((d,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(d).toFixed(1)}`).join(' ');
+  const gy9 = y(GATE.thin), gy15 = y(GATE.normal);
+  const dots = (arr,color)=>arr.map((d,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(d).toFixed(1)}" r="2.5" fill="${color}"/>`).join('');
+  const labels = data.map((d,i)=> (i%Math.ceil(data.length/8||1)===0)
+    ? `<text x="${x(i).toFixed(1)}" y="${H-8}" font-size="9" fill="#8b98a8" text-anchor="middle">${d.date.slice(5)}</text>`:'').join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet">
+    <line x1="${P}" y1="${gy9}" x2="${W-P}" y2="${gy9}" stroke="#3fb950" stroke-dasharray="4 4" opacity=".5"/>
+    <line x1="${P}" y1="${gy15}" x2="${W-P}" y2="${gy15}" stroke="#f85149" stroke-dasharray="4 4" opacity=".5"/>
+    <text x="${W-P}" y="${gy9-4}" font-size="9" fill="#3fb950" text-anchor="end">≤9 厚く</text>
+    <text x="${W-P}" y="${gy15-4}" font-size="9" fill="#f85149" text-anchor="end">&gt;15 見送り</text>
+    <path d="${line(data.map(d=>d.s_high_close))}" fill="none" stroke="#ff5c5c" stroke-width="2"/>
+    <path d="${line(data.map(d=>d.s_low_close))}" fill="none" stroke="#4aa3ff" stroke-width="2"/>
+    ${dots(data.map(d=>d.s_high_close),'#ff5c5c')}${dots(data.map(d=>d.s_low_close),'#4aa3ff')}
+    ${labels}
+  </svg>
+  <div class="muted"><span style="color:#ff5c5c">●</span> S高引け &nbsp; <span style="color:#4aa3ff">●</span> S安引け（点線=gate閾値 9 / 15）</div>`;
+}
+
+function render(d, hist){
+  const b = d.breadth, g = gateInfo(b.s_high_close);
+  document.title = `需給コックピット ${d.date}`;
+  $('#app').innerHTML = `
+    <div class="cards">
+      <div class="card hi">
+        <div class="label">S高 引け（張り付き）</div>
+        <div class="value">${b.s_high_close}</div>
+        <div class="sub">タッチ込み ${b.s_high_touch_total}</div>
+        <div class="gate ${g.cls}">gate: ${g.txt}</div>
+      </div>
+      <div class="card lo">
+        <div class="label">S安 引け（張り付き）</div>
+        <div class="value">${b.s_low_close}</div>
+        <div class="sub">タッチ込み ${b.s_low_touch_total}</div>
+      </div>
+      <div class="card">
+        <div class="label">⑩R候補</div>
+        <div class="value">${d.ryu_r_candidates.length}</div>
+        <div class="sub">S高引け・プライム/PRO除外</div>
+      </div>
+    </div>
+
+    <section>
+      <h2>⑩R候補 <span class="count">前日S高引け・プライム/PRO除外</span></h2>
+      ${chips(d.ryu_r_candidates)}
+    </section>
+
+    <section class="trend">
+      <h2>breadth 履歴（gate較正用）</h2>
+      ${trendSVG(hist)}
+    </section>
+
+    <div class="grid2">
+      <section><h2>S高 引け <span class="count">${d.s_high_close.length}</span></h2>${tableRows(d.s_high_close)}</section>
+      <section><h2>S高 タッチのみ（剥がれ） <span class="count">${d.s_high_touch_only.length}</span></h2>${tableRows(d.s_high_touch_only)}</section>
+      <section><h2>S安 引け <span class="count">${d.s_low_close.length}</span></h2>${tableRows(d.s_low_close)}</section>
+      <section><h2>S安 タッチのみ <span class="count">${d.s_low_touch_only.length}</span></h2>${tableRows(d.s_low_touch_only)}</section>
+    </div>
+    <p class="muted">出典: J-Quants V2 EOD（引け後）。ザラ場リアルタイムの値ではありません。日付 ${d.date}。</p>
+  `;
+}
+
+async function main(){
+  let hist=[];
+  try{ hist = await fetchJSON('data/history.json'); }catch(e){ /* 初回は無いこともある */ }
+  const dates = [...new Set(hist.map(h=>h.date))].sort().reverse();
+  const sel = $('#dateSel');
+
+  async function show(dateIso){
+    const ymd = dateIso.replaceAll('-','');
+    try{
+      const d = await fetchJSON('data/sakane_'+ymd+'.json');
+      render(d, hist);
+    }catch(e){
+      $('#app').innerHTML = `<div class="err">データ取得エラー: ${esc(e.message)}<br>`+
+        `<span class="muted">GitHub Pages 上で開いてください（file:// では取得できません）。</span></div>`;
+    }
+  }
+
+  if(!dates.length){
+    $('#app').innerHTML = `<div class="err">まだデータがありません。`+
+      `キャプチャが1回走ると <code>data/history.json</code> と日次JSONが生成されます。</div>`;
+    return;
+  }
+  sel.innerHTML = dates.map(dt=>`<option value="${dt}">${dt}</option>`).join('');
+  sel.onchange = ()=>show(sel.value);
+  show(dates[0]);
+}
+main();
+</script>
+</body>
+</html>
