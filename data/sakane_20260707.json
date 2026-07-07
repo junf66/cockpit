@@ -1,0 +1,92 @@
+{
+  "date": "2026-07-07",
+  "breadth": {
+    "s_high_close": 6,
+    "s_high_touch_total": 6,
+    "s_low_close": 3,
+    "s_low_touch_total": 3
+  },
+  "ryu_r_candidates": [
+    {
+      "code": "3625",
+      "close": 643.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4199",
+      "close": 770.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4591",
+      "close": 98.0,
+      "market": "グロース"
+    },
+    {
+      "code": "550A",
+      "close": 2638.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "584A",
+      "close": 3725.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6522",
+      "close": 2096.0,
+      "market": "グロース"
+    }
+  ],
+  "s_high_close": [
+    {
+      "code": "3625",
+      "close": 643.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4199",
+      "close": 770.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4591",
+      "close": 98.0,
+      "market": "グロース"
+    },
+    {
+      "code": "550A",
+      "close": 2638.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "584A",
+      "close": 3725.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6522",
+      "close": 2096.0,
+      "market": "グロース"
+    }
+  ],
+  "s_high_touch_only": [],
+  "s_low_close": [
+    {
+      "code": "4424",
+      "close": 272.0,
+      "market": "グロース"
+    },
+    {
+      "code": "504A",
+      "close": 543.0,
+      "market": "グロース"
+    },
+    {
+      "code": "6327",
+      "close": 5760.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_low_touch_only": []
+}
