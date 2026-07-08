@@ -1,0 +1,63 @@
+{
+  "date": "2026-07-08",
+  "breadth": {
+    "s_high_close": 2,
+    "s_high_touch_total": 6,
+    "s_low_close": 1,
+    "s_low_touch_total": 1
+  },
+  "ryu_r_candidates": [
+    {
+      "code": "6469",
+      "close": 3235.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7815",
+      "close": 446.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_close": [
+    {
+      "code": "6469",
+      "close": 3235.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7815",
+      "close": 446.0,
+      "market": "スタンダード"
+    }
+  ],
+  "s_high_touch_only": [
+    {
+      "code": "4265",
+      "close": 399.0,
+      "market": "グロース"
+    },
+    {
+      "code": "4446",
+      "close": 929.0,
+      "market": "スタンダード"
+    },
+    {
+      "code": "7921",
+      "close": 3925.0,
+      "market": "プライム"
+    },
+    {
+      "code": "9256",
+      "close": 4215.0,
+      "market": "グロース"
+    }
+  ],
+  "s_low_close": [
+    {
+      "code": "281A",
+      "close": 519.0,
+      "market": "グロース"
+    }
+  ],
+  "s_low_touch_only": []
+}
