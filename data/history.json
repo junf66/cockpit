@@ -86,5 +86,13 @@
     "s_low_close": 3,
     "s_low_touch_total": 3,
     "ryu_r": 3
+  },
+  {
+    "date": "2026-07-14",
+    "s_high_close": 6,
+    "s_high_touch_total": 8,
+    "s_low_close": 1,
+    "s_low_touch_total": 1,
+    "ryu_r": 6
   }
 ]
